@@ -1,0 +1,41 @@
+﻿@model idk.Models.UserViewModel
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+<h1>Register new account</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        @using (Html.BeginForm("Register", "Account", new { returnUrl = Context.Request.Query["returnUrl"] }, FormMethod.Post))
+        {
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group" style="margin-top:5px">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group" style="margin-top:5px">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" class="form-control" type="password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group" style="margin-top:10px">
+                <input type="submit" value="Register" class="btn btn-primary" />
+                <a asp-action="Login" style="margin-left:5px">Log in</a>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

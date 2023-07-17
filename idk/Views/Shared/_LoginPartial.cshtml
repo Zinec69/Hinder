@@ -1,0 +1,28 @@
+﻿<ul class="navbar-nav">
+@if (User.Identity?.IsAuthenticated ?? false)
+{
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-controller="Account" asp-action="Index" title="Account">Hello @User.Identity.Name!</a>
+    </li>
+    <li class="nav-item">
+        <a id="a_logout" class="nav-link text-dark" href="#">Log out</a>
+    </li>
+}
+else
+{
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Register</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Log in</a>
+    </li>
+}
+</ul>
+
+<div id="notif">
+    <div style="margin-bottom:15px;font-size:18px">Are you sure you want to log out?</div>
+    <div>
+        <button id="btn_cancel" type="button" style="margin-right:5px" class="btn btn-primary">Cancel</button>
+        <button id="btn_logout" type="button" class="btn btn-outline-danger">Log out</button>
+    </div>
+</div>

@@ -1,0 +1,80 @@
+﻿@using idk.Data;
+@using idk.Helpers;
+@model IList<idk.Models.User>
+
+@{
+    ViewData["Title"] = "Discover";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <hr />
+</div>
+
+<div class="shadow-4-strong" style="width: 40vh; height: 60vh; transform: translateX(-50%); left: 50%; border-radius: 30px; position: absolute; display: block; overflow: hidden; border: solid 3px white">
+
+    <div id="partialView0">
+        @{
+            await Html.RenderPartialAsync("_ProfilePartial", Model.Count > 1 ? Model[1] : null);
+        }
+    </div>
+    <div id="partialView1">
+        @{
+            await Html.RenderPartialAsync("_ProfilePartial", Model.Count > 0 ? Model[0] : null);
+        }
+    </div>
+
+    <div style="position: absolute; width: 101%; bottom: -1px; left: -1px; border-top-left-radius: 25px; border-top-right-radius: 25px; background: white; height: 17%; overflow: visible">
+        <img id="btnSwipeLeft"  alt="" style="max-height: 130%; padding: 8%; position: absolute; border-radius: 60px;  left: 17%; transform: translateY(-50%); top: 50%" src="~/pictures/swipe-left.png"  onclick="swipeLeft()" />
+        <img id="btnSwipeRight" alt="" style="max-height: 130%; padding: 8%; position: absolute; border-radius: 60px; right: 17%; transform: translateY(-50%); top: 50%" src="~/pictures/swipe-right.png" onclick="swipeRight()" />
+    </div>
+
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        var pv = 1;
+
+        $(window).ready(function() {
+            $('#partialView1 #divOuter').toggleClass('anim-start');
+        });
+
+        function swipeLeft() {
+            swipeBase('left');
+        }
+
+        function swipeRight() {
+            swipeBase('right');
+        }
+
+        function swipeBase(direction) {
+            var viewId = pv % 2;
+
+            var carouselIdCurrent = $(`#partialView${viewId} [id*="carousel"]`).attr('id');
+            var carouselIdNext = $(`#partialView${(pv + 1) % 2} [id*="carousel"]`).attr('id');
+
+            if (carouselIdCurrent != undefined) {
+                var id = Number(carouselIdCurrent.slice(carouselIdCurrent.indexOf('-') + 1));
+
+                $.post('@Url.Action("SubmitSwipe", "Home")', { userId: id, smash: direction == 'right' });
+
+                var dirUpper = direction.charAt(0).toUpperCase() + direction.slice(1);
+
+                $(`#partialView${viewId} [id*="carousel"]`).toggleClass(`anim-swipe-${direction}`);
+                $(`#partialView${viewId} #txtSwipe${dirUpper}`).removeAttr("hidden");
+                $(`#partialView${viewId} #txtSwipe${dirUpper}`).toggleClass("anim-swipe-text");
+
+                $(`#partialView${(viewId + 1) % 2} #divOuter`).toggleClass('anim-start');
+
+                pv++;
+
+                if (carouselIdNext != undefined) {
+                    setTimeout(function () {
+                        var url = '@Url.Action("GetNextUser", "Home")';
+                        $(`#partialView${viewId}`).load(url, null);
+                    }, 1000);
+                }
+            }
+        }
+    </script>
+}
